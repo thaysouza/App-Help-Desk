@@ -1,9 +1,23 @@
-<?php
-session_start();
+<?
 
-if(!isset( $_SESSION['autenticado']) ||  $_SESSION['autenticado'] != 'SIM'){
-header('Location: index.php?login=erro2');
+require_once "validar_acesso.php"
+
+?>
+
+
+<?php
+
+$chamados = array();
+
+$arquivo = fopen('arquivo.hd', 'r');
+
+while(!feof($arquivo)){
+  $registro =  fgets($arquivo);
+  $chamados[] = $registro;
 }
+
+fclose($arquivo);
+
 ?>
 
 
@@ -40,27 +54,35 @@ header('Location: index.php?login=erro2');
             
             <div class="card-body">
               
+              <? foreach($chamados as $chamado){ ?>
+
+              <?php 
+                 $chamado_dados = explode('#', $chamado);
+
+                 if($_SESSION['perfil_id'] == 2){
+                   if($_SESSION['id'] != $chamado_dados[0]){
+                     continue;
+                   }
+                 }
+
+                 if(count($chamado_dados) < 3){
+                   continue;
+                 }
+                ?>
               <div class="card mb-3 bg-light">
                 <div class="card-body">
-                  <h5 class="card-title">Título do chamado...</h5>
-                  <h6 class="card-subtitle mb-2 text-muted">Categoria</h6>
-                  <p class="card-text">Descrição do chamado...</p>
+                  <h5 class="card-title"><?=$chamado_dados[1]?></h5>
+                  <h6 class="card-subtitle mb-2 text-muted"><?=$chamado_dados[2]?></h6>
+                  <p class="card-text"><?=$chamado_dados[3]?></p>
 
                 </div>
               </div>
+              <? } ?>
 
-              <div class="card mb-3 bg-light">
-                <div class="card-body">
-                  <h5 class="card-title">Título do chamado...</h5>
-                  <h6 class="card-subtitle mb-2 text-muted">Categoria</h6>
-                  <p class="card-text">Descrição do chamado...</p>
-
-                </div>
-              </div>
-
+            
               <div class="row mt-5">
                 <div class="col-6">
-                  <button class="btn btn-lg btn-warning btn-block" type="submit">Voltar</button>
+                <a class="btn btn-lg btn-warning btn-block" href="home.php">Voltar</a>
                 </div>
               </div>
             </div>
